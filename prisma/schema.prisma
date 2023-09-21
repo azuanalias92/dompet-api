@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String?
+  email    String  @unique
+  password String
+  phone    String?
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  RecordCreator       Record[]       @relation("Record_Creator")
+  RecordUpdater       Record[]       @relation("Record_Updater")
+  RecordDeleter       Record[]       @relation("Record_Deleter")
+  AccountCreator      Account[]      @relation("Account_Creator")
+  AccountUpdater      Account[]      @relation("Account_Updater")
+  AccountDeleter      Account[]      @relation("Account_Deleter")
+  CategoryCreator     Category[]     @relation("Category_Creator")
+  CategoryUpdater     Category[]     @relation("Category_Updater")
+  CategoryDeleter     Category[]     @relation("Category_Deleter")
+  UploadCreator       Upload[]       @relation("Upload_Creator")
+  UploadUpdater       Upload[]       @relation("Upload_Updater")
+  UploadDeleter       Upload[]       @relation("Upload_Deleter")
+  OrganizationCreator Organization[] @relation("Organization_Creator")
+  OrganizationUpdater Organization[] @relation("Organization_Updater")
+  OrganizationDeleter Organization[] @relation("Organization_Deleter")
+}
+
+model Record {
+  id         Int          @id @default(autoincrement())
+  amount     Float
+  currency   CurrencyType
+  type       RecordType
+  accountId  Int
+  account    Account      @relation(fields: [accountId], references: [id])
+  categoryId Int
+  category   Category     @relation(fields: [categoryId], references: [id])
+
+  creatorId Int
+  createdAt DateTime  @default(now())
+  creator   User      @relation("Record_Creator", fields: [creatorId], references: [id])
+  updaterId Int?
+  updatedAt DateTime? @updatedAt
+  updater   User?     @relation("Record_Updater", fields: [updaterId], references: [id])
+  deleterId Int?
+  deleter   User?     @relation("Record_Deleter", fields: [deleterId], references: [id])
+  deletedAt DateTime?
+
+  @@index([id])
+}
+
+model Account {
+  id        Int          @id @default(autoincrement())
+  name      String
+  accountNo String?
+  currency  CurrencyType
+  color     String
+
+  creatorId Int
+  createdAt DateTime  @default(now())
+  creator   User      @relation("Account_Creator", fields: [creatorId], references: [id])
+  updaterId Int?
+  updatedAt DateTime? @updatedAt
+  updater   User?     @relation("Account_Updater", fields: [updaterId], references: [id])
+  deleterId Int?
+  deleter   User?     @relation("Account_Deleter", fields: [deleterId], references: [id])
+  deletedAt DateTime?
+
+  Record Record[]
+}
+
+model Category {
+  id       Int            @id @default(autoincrement())
+  name     String
+  parentId Int?
+  type     CategoryType
+  nature   CategoryNature
+
+  creatorId Int
+  createdAt DateTime  @default(now())
+  creator   User      @relation("Category_Creator", fields: [creatorId], references: [id])
+  updaterId Int?
+  updatedAt DateTime? @updatedAt
+  updater   User?     @relation("Category_Updater", fields: [updaterId], references: [id])
+  deleterId Int?
+  deleter   User?     @relation("Category_Deleter", fields: [deleterId], references: [id])
+  deletedAt DateTime?
+  Record    Record[]
+}
+
+model Upload {
+  id       Int        @id @default(autoincrement())
+  fileName String
+  type     UploadType @default(value: PDF)
+  path     String
+
+  creatorId Int
+  createdAt DateTime  @default(now())
+  creator   User      @relation("Upload_Creator", fields: [creatorId], references: [id])
+  updaterId Int?
+  updatedAt DateTime? @updatedAt
+  updater   User?     @relation("Upload_Updater", fields: [updaterId], references: [id])
+  deleterId Int?
+  deleter   User?     @relation("Upload_Deleter", fields: [deleterId], references: [id])
+  deletedAt DateTime?
+}
+
+model Organization {
+  id   Int     @id @default(autoincrement())
+  name String
+  code String?
+
+  creatorId Int
+  createdAt DateTime  @default(now())
+  creator   User      @relation("Organization_Creator", fields: [creatorId], references: [id])
+  updaterId Int?
+  updatedAt DateTime? @updatedAt
+  updater   User?     @relation("Organization_Updater", fields: [updaterId], references: [id])
+  deleterId Int?
+  deleter   User?     @relation("Organization_Deleter", fields: [deleterId], references: [id])
+  deletedAt DateTime?
+}
+
+enum UploadType {
+  Image
+  PDF
+  Excel
+}
+
+enum CurrencyType {
+  MYR
+}
+
+enum RecordType {
+  Income
+  Expense
+  Transfer
+}
+
+enum CategoryNature {
+  Must
+  Need
+  Want
+}
+
+enum CategoryType {
+  Income
+  Expense
+}
