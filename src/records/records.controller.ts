@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 
 @Controller('records')
+@ApiTags('records')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 

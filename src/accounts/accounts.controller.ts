@@ -1,9 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 
 @Controller('accounts')
+@Controller('accounts')
+@ApiTags('accounts')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
