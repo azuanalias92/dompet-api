@@ -7,6 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ModelModule } from './model/model.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { OrganizationsModule } from './organizations/organizations.module';
+import { AccountsModule } from './accounts/accounts.module';
+import { CategoriesModule } from './categories/categories.module';
+import { RecordsModule } from './records/records.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { OrganizationsModule } from './organizations/organizations.module';
     ModelModule,
     UploadsModule,
     OrganizationsModule,
+    AccountsModule,
+    CategoriesModule,
+    RecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
